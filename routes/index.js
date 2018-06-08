@@ -13,7 +13,6 @@ router.get('/', function(req, res, next) {
 
 /*UPLOAD AN IMAGE */
 router.put('/image-upload', function(req, res, next) {
-  //console.log(req.files.sampleImage)
   if (!req.files)
     return res.status(400).json({message: 'No files were uploaded.'});
  
