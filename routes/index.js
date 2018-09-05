@@ -29,7 +29,7 @@ router.put('/image-upload', function(req, res, next) {
       return res.status(500).json({error: err});
     }
     const savePathPub = `/images/${sampleImage.name.replace(' ','').split('.')[0]}.png`
-    const savePath = path.join(process.env.PWD, '/public', savePathPub)
+    const savePath = path.join(process.cwd(), '/public', savePathPub)
     
     // Use the mv() method to place the file somewhere on your server
     fs.writeFile(savePath, outputBuffer, function(err) {
@@ -39,19 +39,22 @@ router.put('/image-upload', function(req, res, next) {
         const formData = new FormData()
         //console.log(this.state.picture)
         formData.append('sampleImage', fs.createReadStream(savePath))
-        fetch('http://35.199.166.194:8082/upload', {
+        fetch('http://romanbelovolov.ru:8082/upload', {
           method: 'POST',
           body: formData
         })
-        .then(response => response.json())
-        .catch(error => res.status(500).json(error))
         .then(response => {
+          return response.json()
+        })        
+        .then(response => {
+            console.log(response)
             const envelop = {
               predictions: response,
               originalImage: savePathPub
             }
             res.json(envelop)
-        });
+        })
+        .catch(error => res.status(500).json(error))
     })
   })
 });
